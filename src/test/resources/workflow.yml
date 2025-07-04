@@ -1,0 +1,48 @@
+tasks:
+  - name: ReserveSeatTask
+    steps:
+      - name: ValidateSeat
+        command: POST /validate
+        input: '{"seat":"12A"}'
+        retryPolicy:
+          maxRetries: 2
+          retryDelayMs: 1000
+      - name: ReserveSeat
+        command: POST /reserve
+        input: '{"seat":"12A"}'
+        compensateCommand: DELETE /reserve
+        retryPolicy:
+          maxRetries: 3
+          retryDelayMs: 1500
+
+  - name: PaymentTask
+    steps:
+      - name: ChargePayment
+        command: POST /payment
+        input: '{"amount":1000}'
+        compensateCommand: POST /refund
+        retryPolicy:
+          maxRetries: 2
+          retryDelayMs: 2000
+      - name: SendConfirmation
+        command: POST /email
+        input: '{"email":"user@example.com"}'
+        retryPolicy:
+          maxRetries: 1
+          retryDelayMs: 1000
+
+  - name: NotificationTask
+    steps:
+      - name: SendSMS
+        command: POST /sms
+        input: '{"phone":"+1234567890"}'
+        retryPolicy:
+          maxRetries: 2
+          retryDelayMs: 1000
+      - name: UpdateDatabase
+        command: POST /database
+        input: '{"status":"confirmed"}'
+        compensateCommand: POST /database/rollback
+        retryPolicy:
+          maxRetries: 3
+          retryDelayMs: 500

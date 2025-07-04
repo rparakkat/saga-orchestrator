@@ -1,0 +1,43 @@
+tasks:
+  - name: SuccessfulTask
+    steps:
+      - name: Step1
+        command: POST /success
+        input: '{"data":"test"}'
+        compensateCommand: DELETE /success
+        retryPolicy:
+          maxRetries: 1
+          retryDelayMs: 1000
+      - name: Step2
+        command: GET /status
+        input: '{"id":"123"}'
+        compensateCommand: POST /cleanup
+        retryPolicy:
+          maxRetries: 2
+          retryDelayMs: 500
+
+  - name: FailingTask
+    steps:
+      - name: NormalStep
+        command: POST /normal
+        input: '{"data":"normal"}'
+        compensateCommand: DELETE /normal
+        retryPolicy:
+          maxRetries: 1
+          retryDelayMs: 1000
+      - name: FailingStep
+        command: FAIL
+        input: '{"data":"will fail"}'
+        compensateCommand: POST /cleanup-fail
+        retryPolicy:
+          maxRetries: 2
+          retryDelayMs: 1000
+
+  - name: UnreachableTask
+    steps:
+      - name: UnreachableStep
+        command: POST /unreachable
+        input: '{"data":"unreachable"}'
+        retryPolicy:
+          maxRetries: 1
+          retryDelayMs: 1000

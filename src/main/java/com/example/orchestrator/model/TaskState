@@ -1,0 +1,13 @@
+package com.example.orchestrator.model;
+
+/**
+ * Enumeration of possible task states
+ */
+public enum TaskState {
+    NOT_STARTED,
+    RUNNING,
+    COMPLETED,
+    FAILED,
+    COMPENSATING,
+    COMPENSATED
+}
