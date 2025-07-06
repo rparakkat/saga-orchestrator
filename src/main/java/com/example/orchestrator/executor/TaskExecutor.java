@@ -1,6 +1,6 @@
 package com.example.orchestrator.executor;
 
-import com.example.orchestrator.model.StepDefinition;
+import com.example.orchestrator.models.dto.StepDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

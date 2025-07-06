@@ -3,7 +3,7 @@ package com.example.orchestrator.api;
 import com.example.orchestrator.AsyncTaskOrchestrator;
 import com.example.orchestrator.TaskOrchestrator;
 import com.example.orchestrator.loader.YamlLoader;
-import com.example.orchestrator.model.TaskDefinition;
+import com.example.orchestrator.models.dto.TaskDefinition;
 import com.example.orchestrator.store.StateStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

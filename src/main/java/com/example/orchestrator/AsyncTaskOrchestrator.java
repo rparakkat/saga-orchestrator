@@ -1,9 +1,9 @@
 package com.example.orchestrator;
 
 import com.example.orchestrator.executor.TaskExecutor;
-import com.example.orchestrator.model.StepDefinition;
-import com.example.orchestrator.model.TaskDefinition;
-import com.example.orchestrator.model.TaskState;
+import com.example.orchestrator.models.dto.StepDefinition;
+import com.example.orchestrator.models.dto.TaskDefinition;
+import com.example.orchestrator.models.dto.TaskState;
 import com.example.orchestrator.store.StateStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

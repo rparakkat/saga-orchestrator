@@ -1,6 +1,6 @@
 package com.example.orchestrator.store;
 
-import com.example.orchestrator.model.TaskState;
+import com.example.orchestrator.models.dto.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

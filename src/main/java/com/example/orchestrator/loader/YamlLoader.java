@@ -1,8 +1,8 @@
 package com.example.orchestrator.loader;
 
-import com.example.orchestrator.model.RetryPolicy;
-import com.example.orchestrator.model.StepDefinition;
-import com.example.orchestrator.model.TaskDefinition;
+import com.example.orchestrator.models.dto.RetryPolicy;
+import com.example.orchestrator.models.dto.StepDefinition;
+import com.example.orchestrator.models.dto.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;

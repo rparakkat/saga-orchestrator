@@ -1,4 +1,4 @@
-package com.example.orchestrator.model;
+package com.example.orchestrator.models.dto;
 
 import java.util.ArrayList;
 import java.util.List;

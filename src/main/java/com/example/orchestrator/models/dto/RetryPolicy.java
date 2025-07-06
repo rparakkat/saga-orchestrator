@@ -1,4 +1,4 @@
-package com.example.orchestrator.model;
+package com.example.orchestrator.models.dto;
 
 /**
  * Retry policy configuration for step execution

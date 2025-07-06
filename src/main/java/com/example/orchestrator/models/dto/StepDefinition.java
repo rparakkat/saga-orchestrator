@@ -1,4 +1,4 @@
-package com.example.orchestrator.model;
+package com.example.orchestrator.models.dto;
 
 /**
  * Definition of a single step in a task workflow
