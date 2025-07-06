@@ -1,0 +1,21 @@
+public class CachingHttpCommandDecorator implements Command {
+    private final Command wrapped;
+    private final Cache<String, CommandResult> cache;
+
+    @Override
+    public CommandResult execute() {
+        String cacheKey = generateCacheKey();
+        CommandResult cached = cache.getIfPresent(cacheKey);
+
+        if (cached != null) {
+            return cached;
+        }
+
+        CommandResult result = wrapped.execute();
+        if (result.isSuccess()) {
+            cache.put(cacheKey, result);
+        }
+
+        return result;
+    }
+}

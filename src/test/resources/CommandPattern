@@ -1,0 +1,44 @@
+// HTTP Command Model
+public class HttpCommand {
+    private String method; // GET, POST, PUT, DELETE
+    private String url;
+    private Map<String, String> headers;
+    private String body;
+    private int timeoutMs;
+    private RetryPolicy retryPolicy;
+
+    // Constructors, getters, setters
+}
+
+// Command Interface
+public interface Command {
+    CommandResult execute();
+    CommandResult compensate();
+    String getName();
+}
+
+// HTTP Command Implementation
+public class HttpCommandExecutor implements Command {
+    private final HttpCommand command;
+    private final RestTemplate restTemplate;
+
+    @Override
+    public CommandResult execute() {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            command.getHeaders().forEach(headers::add);
+
+            HttpEntity<String> entity = new HttpEntity<>(command.getBody(), headers);
+            ResponseEntity<String> response = restTemplate.exchange(
+                command.getUrl(),
+                HttpMethod.valueOf(command.getMethod()),
+                entity,
+                String.class
+            );
+
+            return new CommandResult(true, response.getBody(), response.getStatusCodeValue());
+        } catch (Exception e) {
+            return new CommandResult(false, e.getMessage(), 500);
+        }
+    }
+}

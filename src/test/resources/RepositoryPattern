@@ -1,0 +1,34 @@
+// MongoDB Document Model
+@Document(collection = "task_states")
+public class TaskStateDocument {
+    @Id
+    private String id;
+    private String taskName;
+    private TaskState state;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Map<String, Object> metadata;
+
+    // Constructors, getters, setters
+}
+
+// Repository Interface
+public interface TaskStateRepository extends MongoRepository<TaskStateDocument, String> {
+    Optional<TaskStateDocument> findByTaskName(String taskName);
+    List<TaskStateDocument> findByState(TaskState state);
+    void deleteByTaskName(String taskName);
+}
+
+// Service Layer
+@Service
+public class TaskStateService {
+    private final TaskStateRepository repository;
+
+    public void updateTaskState(String taskName, TaskState state) {
+        TaskStateDocument document = repository.findByTaskName(taskName)
+            .orElse(new TaskStateDocument(taskName));
+        document.setState(state);
+        document.setUpdatedAt(LocalDateTime.now());
+        repository.save(document);
+    }
+}

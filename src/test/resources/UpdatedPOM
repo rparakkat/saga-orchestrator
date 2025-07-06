@@ -1,0 +1,55 @@
+<dependencies>
+    <!-- Existing dependencies -->
+
+    <!-- MongoDB -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+
+    <!-- HTTP Client -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+
+    <!-- Circuit Breaker -->
+    <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-spring-boot3</artifactId>
+        <version>2.1.0</version>
+    </dependency>
+
+    <!-- Metrics -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- Cache -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+</dependencies>
+
+
+Implementation Priority for MongoDB + HTTP
+Phase 1 (Critical)
+Repository Pattern - MongoDB integration
+Command Pattern - HTTP command abstraction
+Factory Pattern - Command creation from YAML
+Phase 2 (Important)
+Observer Pattern - State change notifications
+Strategy Pattern - Execution strategies
+Template Method Pattern - Orchestration flow
+Phase 3 (Enhancement)
+Chain of Responsibility Pattern - Advanced retry logic
+Builder Pattern - Command construction
+Decorator Pattern - Cross-cutting concerns
+Mediator Pattern - Component coordination
+
+
+
+This re-evaluation focuses on making the system production-ready with MongoDB persistence and proper HTTP command handling,
+which are the most critical requirements for a real-world saga orchestrator.

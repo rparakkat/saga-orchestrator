@@ -1,0 +1,16 @@
+public interface ExecutionStrategy {
+    boolean executeTasks(List<TaskDefinition> tasks);
+}
+
+@Component
+public class CircuitBreakerExecutionStrategy implements ExecutionStrategy {
+    private final CircuitBreaker circuitBreaker;
+
+    @Override
+    public boolean executeTasks(List<TaskDefinition> tasks) {
+        return circuitBreaker.runSupplier(() -> {
+            // Execute tasks with circuit breaker protection
+            return executeWithCircuitBreaker(tasks);
+        });
+    }
+}

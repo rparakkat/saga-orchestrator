@@ -1,0 +1,35 @@
+public abstract class AbstractOrchestrator {
+    protected final TaskStateService stateService;
+    protected final List<StateChangeObserver> observers;
+
+    public final boolean executeTasks(List<TaskDefinition> tasks) {
+        List<TaskDefinition> completedTasks = new ArrayList<>();
+
+        for (TaskDefinition task : tasks) {
+            stateService.updateTaskState(task.getName(), TaskState.RUNNING);
+            notifyStateChange(task.getName(), null, TaskState.RUNNING);
+
+            boolean taskSuccess = executeTask(task);
+
+            if (taskSuccess) {
+                stateService.updateTaskState(task.getName(), TaskState.COMPLETED);
+                notifyStateChange(task.getName(), TaskState.RUNNING, TaskState.COMPLETED);
+                completedTasks.add(task);
+            } else {
+                stateService.updateTaskState(task.getName(), TaskState.FAILED);
+                notifyStateChange(task.getName(), TaskState.RUNNING, TaskState.FAILED);
+                compensateCompletedTasks(completedTasks);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected abstract boolean executeTask(TaskDefinition task);
+    protected abstract void compensateCompletedTasks(List<TaskDefinition> completedTasks);
+
+    protected void notifyStateChange(String taskName, TaskState oldState, TaskState newState) {
+        observers.forEach(observer -> observer.onStateChanged(taskName, oldState, newState, null));
+    }
+}

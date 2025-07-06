@@ -1,0 +1,21 @@
+@Component
+public class OrchestrationMediator {
+    private final TaskStateService stateService;
+    private final CommandFactory commandFactory;
+    private final List<StateChangeObserver> observers;
+    private final RestTemplate restTemplate;
+
+    public void executeStep(StepDefinition step) {
+        Command command = commandFactory.createCommand(step);
+        CommandResult result = command.execute();
+
+        if (!result.isSuccess()) {
+            // Handle failure and compensation
+            handleStepFailure(step, result);
+        }
+    }
+
+    private void handleStepFailure(StepDefinition step, CommandResult result) {
+        // Update state, notify observers, trigger compensation
+    }
+}

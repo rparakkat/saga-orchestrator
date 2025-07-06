@@ -1,0 +1,24 @@
+public interface CommandFactory {
+    Command createCommand(StepDefinition step);
+    Command createCompensationCommand(StepDefinition step);
+}
+
+@Component
+public class HttpCommandFactory implements CommandFactory {
+
+    @Override
+    public Command createCommand(StepDefinition step) {
+        HttpCommand httpCommand = parseHttpCommand(step.getCommand());
+        httpCommand.setRetryPolicy(step.getRetryPolicy());
+        return new HttpCommandExecutor(httpCommand);
+    }
+
+    private HttpCommand parseHttpCommand(String commandString) {
+        // Parse "POST /api/users" into HttpCommand object
+        String[] parts = commandString.split("\\s+", 2);
+        String method = parts[0];
+        String url = parts[1];
+
+        return new HttpCommand(method, url);
+    }
+}

@@ -1,0 +1,26 @@
+public interface StateChangeObserver {
+    void onStateChanged(String taskName, TaskState oldState, TaskState newState, Map<String, Object> metadata);
+}
+
+@Component
+public class MetricsObserver implements StateChangeObserver {
+    private final MeterRegistry meterRegistry;
+
+    @Override
+    public void onStateChanged(String taskName, TaskState oldState, TaskState newState, Map<String, Object> metadata) {
+        meterRegistry.counter("task.state.transitions",
+            "task", taskName,
+            "from", oldState.name(),
+            "to", newState.name()).increment();
+    }
+}
+
+@Component
+public class NotificationObserver implements StateChangeObserver {
+    @Override
+    public void onStateChanged(String taskName, TaskState oldState, TaskState newState, Map<String, Object> metadata) {
+        if (newState == TaskState.FAILED) {
+            // Send alert notification
+        }
+    }
+}
