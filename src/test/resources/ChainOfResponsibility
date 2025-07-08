@@ -1,35 +1,31 @@
-public abstract class AbstractOrchestrator {
-    protected final TaskStateService stateService;
-    protected final List<StateChangeObserver> observers;
+public abstract class RetryHandler {
+    protected RetryHandler nextHandler;
 
-    public final boolean executeTasks(List<TaskDefinition> tasks) {
-        List<TaskDefinition> completedTasks = new ArrayList<>();
+    public void setNext(RetryHandler handler) {
+        this.nextHandler = handler;
+    }
 
-        for (TaskDefinition task : tasks) {
-            stateService.updateTaskState(task.getName(), TaskState.RUNNING);
-            notifyStateChange(task.getName(), null, TaskState.RUNNING);
+    public abstract boolean handle(HttpCommand command, int attempt, Exception lastException);
+}
 
-            boolean taskSuccess = executeTask(task);
-
-            if (taskSuccess) {
-                stateService.updateTaskState(task.getName(), TaskState.COMPLETED);
-                notifyStateChange(task.getName(), TaskState.RUNNING, TaskState.COMPLETED);
-                completedTasks.add(task);
-            } else {
-                stateService.updateTaskState(task.getName(), TaskState.FAILED);
-                notifyStateChange(task.getName(), TaskState.RUNNING, TaskState.FAILED);
-                compensateCompletedTasks(completedTasks);
+@Component
+public class ExponentialBackoffRetryHandler extends RetryHandler {
+    @Override
+    public boolean handle(HttpCommand command, int attempt, Exception lastException) {
+        if (attempt <= command.getRetryPolicy().getMaxRetries()) {
+            long delay = calculateExponentialBackoff(attempt, command.getRetryPolicy().getRetryDelayMs());
+            try {
+                Thread.sleep(delay);
+                return true; // Retry
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 return false;
             }
         }
-
-        return true;
+        return nextHandler != null ? nextHandler.handle(command, attempt, lastException) : false;
     }
 
-    protected abstract boolean executeTask(TaskDefinition task);
-    protected abstract void compensateCompletedTasks(List<TaskDefinition> completedTasks);
-
-    protected void notifyStateChange(String taskName, TaskState oldState, TaskState newState) {
-        observers.forEach(observer -> observer.onStateChanged(taskName, oldState, newState, null));
+    private long calculateExponentialBackoff(int attempt, long baseDelay) {
+        return (long) (baseDelay * Math.pow(2, attempt - 1));
     }
 }
